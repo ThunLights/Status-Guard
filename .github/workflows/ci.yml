@@ -20,6 +20,8 @@ jobs:
                 registry-url: "https://registry.npmjs.org"
 
             - name: CI
+              env:
+                PUBLIC_URL: "http://localhost:3000"
               run: |
                 npm install
                 npm run ci
