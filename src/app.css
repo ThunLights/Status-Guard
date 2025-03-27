@@ -3,9 +3,9 @@
 @plugin "@tailwindcss/typography";
 
 body {
-    background-color: rgb(22, 28, 38);
+	background-color: rgb(22, 28, 38);
 }
 
 p {
-    color: white;
+	color: white;
 }
