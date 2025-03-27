@@ -16,27 +16,27 @@
 <Meta />
 
 <div class="website">
-    <Header />
-    <main>
-        <p class="title text-center">All services are working fine.</p>
-    
-        <div class="services">
-            {#if services.length}
-                {#each services as service (service)}
-                    <div class="service"></div>
-                {/each}
-            {:else}
-                <p class="not-found text-center">There are no services registered.</p>
-            {/if}
-        </div>
-    </main>
-    <Footer />
+	<Header />
+	<main>
+		<p class="title text-center">All services are working fine.</p>
+
+		<div class="services">
+			{#if services.length}
+				{#each services as service (service)}
+					<div class="service"></div>
+				{/each}
+			{:else}
+				<p class="not-found text-center">There are no services registered.</p>
+			{/if}
+		</div>
+	</main>
+	<Footer />
 </div>
 
 <style>
 	main {
 		overflow: hidden;
-        min-height: 93vh;
+		min-height: 93vh;
 	}
 	.title {
 		font-family: "Kiwi Maru", serif;
