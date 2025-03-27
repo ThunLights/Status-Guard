@@ -1,0 +1,8 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "status-guard",
+    "main": "build/index.js",
+    "site": {
+        "bucket": "./build/public"
+    }
+}
