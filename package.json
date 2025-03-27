@@ -39,6 +39,8 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@fontsource/dela-gothic-one": "^5.2.5",
+		"@fontsource/m-plus-rounded-1c": "^5.2.5",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/adapter-vercel": "^5.6.3",
 		"cloudflare": "^4.2.0",
