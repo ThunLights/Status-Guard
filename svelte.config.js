@@ -4,14 +4,14 @@ import vercelAdapter from "@sveltejs/adapter-vercel";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 const adapter = (() => {
-    const adapterType = process.env.ADAPTER_TYPE;
-    if (adapterType === "node") {
-        return nodeAdapter();
-    }
-    if (adapterType === "vercel") {
-        return vercelAdapter();
-    }
-    return cfWorkersAdapter();
+	const adapterType = process.env.ADAPTER_TYPE;
+	if (adapterType === "node") {
+		return nodeAdapter();
+	}
+	if (adapterType === "vercel") {
+		return vercelAdapter();
+	}
+	return cfWorkersAdapter();
 })();
 
 const config = {
