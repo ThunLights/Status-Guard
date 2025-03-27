@@ -3,7 +3,9 @@
 </script>
 
 <footer>
-	<p>Powerd by <a href={repoUrl} target="_blank" rel="noopener noreferrer">Status Guard</a></p>
+	<p class="text-center">
+		Powerd by <a href={repoUrl} target="_blank" rel="noopener noreferrer">Status Guard</a>
+	</p>
 </footer>
 
 <style>
