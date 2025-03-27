@@ -12,7 +12,6 @@
 	}
 	p {
 		padding: 3px 5px;
-		color: white;
 	}
 	a {
 		color: #58d4e4;
