@@ -6,7 +6,9 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const adapter = (() => {
 	const adapterType = process.env.ADAPTER_TYPE;
 	if (adapterType === "node") {
-		return nodeAdapter();
+		return nodeAdapter({
+            out: "build"
+        });
 	}
 	if (adapterType === "vercel") {
 		return vercelAdapter();
