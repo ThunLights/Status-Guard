@@ -1,1 +1,1 @@
-export const repoUrl = "https://github.com/thunlights/Stauts-Guard";
+export const repoUrl = "https://github.com/ThunLights/Status-Guard";
