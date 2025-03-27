@@ -10,16 +10,16 @@
 
 <Header />
 <main>
-    <p class="title text-center text-6xl">404</p>
-    <div>
-        <p class="text-center">Page not found.</p>
-    </div>
+	<p class="title text-center text-6xl">404</p>
+	<div>
+		<p class="text-center">Page not found.</p>
+	</div>
 </main>
 <Footer />
 
 <style>
 	main {
 		overflow: hidden;
-        min-height: 93vh;
+		min-height: 93vh;
 	}
 </style>
