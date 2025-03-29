@@ -25,7 +25,7 @@ async function start() {
 					body: JSON.stringify(api.body)
 				});
 				if (response && !response.ok) {
-                    await database.status.update(api.domain, response.status);
+					await database.status.update(api.domain, response.status);
 				}
 			}
 		}
