@@ -2,6 +2,7 @@ import { sleep } from "$lib/sleep";
 
 export type Check = {
 	ok: boolean;
+	status: number;
 	content: string;
 };
 
@@ -17,6 +18,7 @@ export class Status {
 			if (response.ok) {
 				return {
 					ok: true,
+					status: response.status,
 					content: "success"
 				};
 			}
@@ -27,18 +29,21 @@ export class Status {
 			if (response.status === 408) {
 				return {
 					ok: false,
+					status: response.status,
 					content: "ddos"
 				};
 			}
 			if (500 <= response.status) {
 				return {
 					ok: false,
+					status: response.status,
 					content: "5xx"
 				};
 			}
 			if (!response.ok) {
 				return {
 					ok: false,
+					status: response.status,
 					content: "4xx"
 				};
 			}

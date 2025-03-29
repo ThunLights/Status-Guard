@@ -1,0 +1,36 @@
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Website {
+    domain String   @id
+    zoneId String
+    url    String
+
+    label String?
+}
+
+model Api {
+    domain String
+    url    String
+
+    method String?
+    header Json?
+    body   Json?
+
+    @@id([domain, url])
+}
+
+model Status {
+    domain String
+    status Int
+    date   DateTime
+
+    @@id([domain, date])
+}
