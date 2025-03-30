@@ -11,7 +11,29 @@ process.on("uncaughtExceptionMonitor", console.log);
 const throughStatuses = [404, 405];
 const lockdownZones = new Map<string, Check>();
 
+async function changeRule(zoneId: string, enabled: boolean) {
+    for (const { id } of await cloudflare.rulesets.list(zoneId)) {
+        const rulesetId = id;
+        const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
+        for (const rule of data ? data.rules : []) {
+            if (rule.id && rule.description && rule.description.startsWith("sg:")) {
+                await cloudflare.rules.edit(id, rule.id, {
+                    zone_id: zoneId,
+                    enabled,
+                    action: rule.action ?? "rewrite",
+                    expression: rule.expression ?? "rewrite",
+                    description: rule.description
+                });
+            }
+        }
+    }
+}
+
 async function start() {
+    for (const { zoneId } of await database.website.list()) {
+        await changeRule(zoneId, false);
+    }
+
 	setInterval(async () => {
 		for (const { domain, url, zoneId } of await database.website.list()) {
 			if (!lockdownZones.has(zoneId)) {
@@ -29,42 +51,13 @@ async function start() {
 						body: JSON.stringify(api.body)
 					});
 					if (response && !response.ok) {
-						for (const { id } of await cloudflare.rulesets.list(zoneId)) {
-							const rulesetId = id;
-							const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
-							for (const rule of data ? data.rules : []) {
-								if (rule.id && rule.description && rule.description.startsWith("sg:")) {
-									await cloudflare.rules.edit(id, rule.id, {
-										zone_id: zoneId,
-										enabled: true,
-										action: rule.action ?? "rewrite",
-										expression: rule.expression ?? "rewrite",
-										description: rule.description
-									});
-								}
-							}
-						}
-
+                        await changeRule(zoneId, true);
 						await database.status.update(api.domain, response.status);
 						lockdownZones.set(zoneId, response);
 						setTimeout(
 							async () => {
 								lockdownZones.delete(zoneId);
-								for (const { id } of await cloudflare.rulesets.list(zoneId)) {
-									const rulesetId = id;
-									const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
-									for (const rule of data ? data.rules : []) {
-										if (rule.id && rule.description && rule.description.startsWith("sg:")) {
-											await cloudflare.rules.edit(id, rule.id, {
-												zone_id: zoneId,
-												enabled: false,
-												action: rule.action ?? "rewrite",
-												expression: rule.expression ?? "rewrite",
-												description: rule.description
-											});
-										}
-									}
-								}
+                                await changeRule(zoneId, false);
 							},
 							60 * 60 * 1000
 						);
