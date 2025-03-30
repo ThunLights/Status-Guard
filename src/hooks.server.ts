@@ -1,31 +1,74 @@
 import { Header } from "$lib/header";
+import { cloudflare } from "$lib/server/Cloudflare/index";
 import { database } from "$lib/server/Database/index";
 import { Status } from "$lib/server/status";
 
+import type { Check } from "$lib/server/status";
 import type { Handle, HandleServerError } from "@sveltejs/kit";
 
 process.on("uncaughtExceptionMonitor", console.log);
 
 const throughStatuses = [404, 405];
+const lockdownZones = new Map<string, Check>();
 
 async function start() {
 	setInterval(async () => {
-		for (const { domain, url } of await database.website.list()) {
-			const apis = (await database.api.fetchAll(domain)).concat({
-				domain,
-				url,
-				method: null,
-				header: null,
-				body: null
-			});
-			for (const api of apis) {
-				const response = await Status.check(api.url, {
-					method: api.method ?? "GET",
-					headers: Header.parse(api.header),
-					body: JSON.stringify(api.body)
+		for (const { domain, url, zoneId } of await database.website.list()) {
+			if (!lockdownZones.has(zoneId)) {
+				const apis = (await database.api.fetchAll(domain)).concat({
+					domain,
+					url,
+					method: null,
+					header: null,
+					body: null
 				});
-				if (response && !response.ok) {
-					await database.status.update(api.domain, response.status);
+				for (const api of apis) {
+					const response = await Status.check(api.url, {
+						method: api.method ?? "GET",
+						headers: Header.parse(api.header),
+						body: JSON.stringify(api.body)
+					});
+					if (response && !response.ok) {
+						for (const { id } of await cloudflare.rulesets.list(zoneId)) {
+							const rulesetId = id;
+							const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
+							for (const rule of data ? data.rules : []) {
+								if (rule.id && rule.description && rule.description.startsWith("sg:")) {
+									await cloudflare.rules.edit(id, rule.id, {
+										zone_id: zoneId,
+										enabled: true,
+										action: rule.action ?? "rewrite",
+										expression: rule.expression ?? "rewrite",
+										description: rule.description
+									});
+								}
+							}
+						}
+
+						await database.status.update(api.domain, response.status);
+						lockdownZones.set(zoneId, response);
+						setTimeout(
+							async () => {
+								lockdownZones.delete(zoneId);
+								for (const { id } of await cloudflare.rulesets.list(zoneId)) {
+									const rulesetId = id;
+									const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
+									for (const rule of data ? data.rules : []) {
+										if (rule.id && rule.description && rule.description.startsWith("sg:")) {
+											await cloudflare.rules.edit(id, rule.id, {
+												zone_id: zoneId,
+												enabled: false,
+												action: rule.action ?? "rewrite",
+												expression: rule.expression ?? "rewrite",
+												description: rule.description
+											});
+										}
+									}
+								}
+							},
+							60 * 60 * 1000
+						);
+					}
 				}
 			}
 		}

@@ -23,6 +23,10 @@ jobs:
       - name: CI
         env:
           PUBLIC_URL: "http://localhost:3000"
+          CF_API_KEY: ""
+          DATABASE_URL: "postgresql://user:0000@localhost:1234/test"
+          DIRECT_URL: "postgresql://user:0000@localhost:1234/test"
+
         run: |
           npm install
           npm run ci
