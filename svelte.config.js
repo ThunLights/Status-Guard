@@ -16,9 +16,15 @@ const adapter = (() => {
 	return cfWorkersAdapter();
 })();
 
+/** @type {import("@sveltejs/kit").Config} */
 const config = {
 	preprocess: vitePreprocess(),
-	kit: { adapter }
+	kit: {
+		adapter,
+		alias: {
+			"$routes/*": "src/routes"
+		}
+	}
 };
 
 export default config;

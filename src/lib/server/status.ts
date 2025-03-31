@@ -40,7 +40,7 @@ export class Status {
 					content: "5xx"
 				};
 			}
-			if (!response.ok) {
+			if (400 <= response.status) {
 				return {
 					ok: false,
 					status: response.status,

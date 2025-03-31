@@ -6,6 +6,7 @@ datasource db {
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["driverAdapters"]
 }
 
 model Website {
@@ -29,7 +30,7 @@ model Api {
 
 model Status {
     domain String
-    status Int
+    status Int[]
     date   DateTime
 
     @@id([domain, date])
