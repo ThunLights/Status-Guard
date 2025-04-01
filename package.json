@@ -9,7 +9,7 @@
 		"build": "npx prisma generate && vite build",
 		"build:cf": "set \"ADAPTER_TYPE=cf\" && npm run build",
 		"build:vercel": "set \"ADAPTER_TYPE=vercel\" && npm run build",
-		"ci": "npm run build && npm run build:node && npm run build:vercel",
+		"ci": "npm run build && npm run build:cf && npm run build:vercel",
 		"db:migration": "npx prisma migrate dev",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
