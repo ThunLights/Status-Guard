@@ -1,12 +1,12 @@
 import nodeAdapter from "@sveltejs/adapter-node";
-import cfWorkersAdapter from "@sveltejs/adapter-cloudflare-workers";
+import cfAdapter from "@sveltejs/adapter-cloudflare";
 import vercelAdapter from "@sveltejs/adapter-vercel";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 const adapter = (() => {
 	const adapterType = process.env.ADAPTER_TYPE;
 	if (adapterType === "cf") {
-		return cfWorkersAdapter({
+		return cfAdapter({
 			config: "wrangler.jsonc"
 		});
 	}
