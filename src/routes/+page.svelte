@@ -10,21 +10,37 @@
 	import { onMount } from "svelte";
 	import { Status } from "$lib/client/status";
 
-	import type { ResponseJson } from "$routes/api/home/+server";
+	import type { ApiHomeResponse } from "$routes/api/home/+server";
+	import type { ParsedStatus } from "$lib/client/status";
+	import type { ApiStatusResponse } from "./api/status/+server";
 
-	type StatusElemnt = ResponseJson["post"][number]["data"][number];
+	type StatusElemnt = ApiHomeResponse["post"][number]["data"][number];
 
-	let services = $state<ResponseJson["post"]>([]);
+	let pageStatusLabel = $state("");
+	let services = $state<ApiHomeResponse["post"]>([]);
 
 	onMount(async () => {
-        await (async () => {
-            const response = await fetch("/api/home", {
-                method: "POST"
-            });
-            if (response.status === 200) {
-                services = await response.json();
-            }
-        })();
+		await (async () => {
+			const response = await fetch("/api/status", {
+				method: "POST"
+			});
+			if (response.status === 200) {
+				const data: ApiStatusResponse["post"] = await response.json();
+				const statuses = data.map(({ status }) => status);
+				pageStatusLabel =
+					statuses.includes("error") || statuses.includes("unstable")
+						? "Some pages are unstable."
+						: "All services are working fine.";
+			}
+		})();
+		await (async () => {
+			const response = await fetch("/api/home", {
+				method: "POST"
+			});
+			if (response.status === 200) {
+				services = await response.json();
+			}
+		})();
 	});
 </script>
 
@@ -33,7 +49,7 @@
 <div class="website">
 	<Header />
 	<main>
-		<p class="title text-center">All services are working fine.</p>
+		<p class="title text-center">{pageStatusLabel}</p>
 
 		<div class="services">
 			{#each services as service (service)}

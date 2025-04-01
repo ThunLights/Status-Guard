@@ -10,6 +10,20 @@ export class Status {
 		return new Date(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
 	}
 
+	public get nowDate() {
+		return Status.nowDate;
+	}
+
+	public async fetch<T extends Prisma.StatusFindFirstArgs>(
+		args?: Prisma.SelectSubset<T, Prisma.StatusFindFirstArgs<DefaultArgs>>
+	) {
+		try {
+			return await this.table.findFirst(args);
+		} catch {
+			return null;
+		}
+	}
+
 	public async update(domain: string, status: number) {
 		try {
 			const date = Status.nowDate;

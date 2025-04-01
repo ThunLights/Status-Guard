@@ -3,7 +3,7 @@ import { database } from "$lib/server/Database/index";
 
 import type { RequestHandler } from "./$types";
 
-export type ResponseJson = {
+export type ApiHomeResponse = {
 	post: Array<{
 		domain: string;
 		label: string | null;
@@ -15,7 +15,7 @@ export type ResponseJson = {
 };
 
 export const POST = (async () => {
-	const data: ResponseJson["post"] = [];
+	const data: ApiHomeResponse["post"] = [];
 	for (const { domain, label } of await database.website.list()) {
 		data.push({
 			domain,
@@ -25,5 +25,5 @@ export const POST = (async () => {
 			})
 		});
 	}
-	return json(data satisfies ResponseJson["post"], { status: 200 });
+	return json(data satisfies ApiHomeResponse["post"], { status: 200 });
 }) satisfies RequestHandler;
