@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"start": "node build/index.js",
 		"dev": "vite dev",
 		"build": "npx prisma generate && vite build",
 		"build:node": "set \"ADAPTER_TYPE=node\" && npm run build",
@@ -45,9 +46,11 @@
 		"@fontsource/kiwi-maru": "^5.2.5",
 		"@fontsource/m-plus-rounded-1c": "^5.2.5",
 		"@prisma/client": "^6.5.0",
+		"@prisma/extension-accelerate": "^1.3.0",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/adapter-vercel": "^5.6.3",
 		"cloudflare": "^4.2.0",
+		"node-fetch": "^3.3.2",
 		"wrangler": "^4.5.0",
 		"zod": "^3.24.2"
 	}
