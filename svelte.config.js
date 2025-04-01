@@ -1,19 +1,21 @@
 import nodeAdapter from "@sveltejs/adapter-node";
-import cfWorkersAdapter from "@sveltejs/adapter-cloudflare-workers";
+import cfAdapter from "@sveltejs/adapter-cloudflare";
 import vercelAdapter from "@sveltejs/adapter-vercel";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 const adapter = (() => {
 	const adapterType = process.env.ADAPTER_TYPE;
-	if (adapterType === "node") {
-		return nodeAdapter({
-			out: "build"
+	if (adapterType === "cf") {
+		return cfAdapter({
+			config: "wrangler.jsonc"
 		});
 	}
 	if (adapterType === "vercel") {
 		return vercelAdapter();
 	}
-	return cfWorkersAdapter();
+	return nodeAdapter({
+		out: "build"
+	});
 })();
 
 /** @type {import("@sveltejs/kit").Config} */

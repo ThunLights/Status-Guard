@@ -1,6 +1,4 @@
 import { _prisma } from "./index";
-import type { DefaultArgs } from "@prisma/client/runtime/library";
-import type { Prisma } from "@prisma/client";
 
 export class Status {
 	private readonly table = _prisma.status;
@@ -14,9 +12,7 @@ export class Status {
 		return Status.nowDate;
 	}
 
-	public async fetch<T extends Prisma.StatusFindFirstArgs>(
-		args?: Prisma.SelectSubset<T, Prisma.StatusFindFirstArgs<DefaultArgs>>
-	) {
+	public async fetch(args?: { where?: { domain?: string; date?: Date } }) {
 		try {
 			return await this.table.findFirst(args);
 		} catch {
@@ -43,9 +39,7 @@ export class Status {
 		}
 	}
 
-	public async list<T extends Prisma.StatusFindManyArgs>(
-		args?: Prisma.SelectSubset<T, Prisma.StatusFindManyArgs<DefaultArgs>>
-	) {
+	public async list(args?: { where?: { domain?: string } }) {
 		try {
 			return await this.table.findMany(args);
 		} catch {
