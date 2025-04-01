@@ -5,15 +5,17 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 const adapter = (() => {
 	const adapterType = process.env.ADAPTER_TYPE;
-	if (adapterType === "node") {
-		return nodeAdapter({
-			out: "build"
+	if (adapterType === "cf") {
+		return cfWorkersAdapter({
+			config: "wrangler.jsonc"
 		});
 	}
 	if (adapterType === "vercel") {
 		return vercelAdapter();
 	}
-	return cfWorkersAdapter();
+	return nodeAdapter({
+		out: "build"
+	});
 })();
 
 /** @type {import("@sveltejs/kit").Config} */
