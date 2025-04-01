@@ -11,7 +11,6 @@
 	import { Status } from "$lib/client/status";
 
 	import type { ApiHomeResponse } from "$routes/api/home/+server";
-	import type { ParsedStatus } from "$lib/client/status";
 	import type { ApiStatusResponse } from "./api/status/+server";
 
 	type StatusElemnt = ApiHomeResponse["post"][number]["data"][number];
