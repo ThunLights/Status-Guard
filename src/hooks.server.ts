@@ -6,12 +6,34 @@ import { Status } from "$lib/server/status";
 import type { Check } from "$lib/server/status";
 import type { Handle, HandleServerError } from "@sveltejs/kit";
 
-process.on("uncaughtExceptionMonitor", console.log);
+process.on("uncaughtExceptionMonitor", console.error);
 
-const throughStatuses = [404, 405];
+const throughStatuses = [404, 405] satisfies Array<number>;
 const lockdownZones = new Map<string, Check>();
 
+async function changeRule(zoneId: string, enabled: boolean) {
+	for (const { id } of await cloudflare.rulesets.list(zoneId)) {
+		const rulesetId = id;
+		const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
+		for (const rule of data ? data.rules : []) {
+			if (rule.id && rule.description && rule.description.startsWith("sg:")) {
+				await cloudflare.rules.edit(id, rule.id, {
+					zone_id: zoneId,
+					enabled,
+					action: rule.action ?? "rewrite",
+					expression: rule.expression ?? "rewrite",
+					description: rule.description
+				});
+			}
+		}
+	}
+}
+
 async function start() {
+	for (const { zoneId } of await database.website.list()) {
+		await changeRule(zoneId, false);
+	}
+
 	setInterval(async () => {
 		for (const { domain, url, zoneId } of await database.website.list()) {
 			if (!lockdownZones.has(zoneId)) {
@@ -23,48 +45,22 @@ async function start() {
 					body: null
 				});
 				for (const api of apis) {
+					const method = api.method ?? "GET";
 					const response = await Status.check(api.url, {
 						method: api.method ?? "GET",
 						headers: Header.parse(api.header),
-						body: JSON.stringify(api.body)
+						body: method !== "GET" && method !== null ? JSON.stringify(api.body) : undefined
 					});
-					if (response && !response.ok) {
-						for (const { id } of await cloudflare.rulesets.list(zoneId)) {
-							const rulesetId = id;
-							const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
-							for (const rule of data ? data.rules : []) {
-								if (rule.id && rule.description && rule.description.startsWith("sg:")) {
-									await cloudflare.rules.edit(id, rule.id, {
-										zone_id: zoneId,
-										enabled: true,
-										action: rule.action ?? "rewrite",
-										expression: rule.expression ?? "rewrite",
-										description: rule.description
-									});
-								}
-							}
-						}
-
+					if (response) {
 						await database.status.update(api.domain, response.status);
+					}
+					if (response && !response.ok) {
+						await changeRule(zoneId, true);
 						lockdownZones.set(zoneId, response);
 						setTimeout(
 							async () => {
 								lockdownZones.delete(zoneId);
-								for (const { id } of await cloudflare.rulesets.list(zoneId)) {
-									const rulesetId = id;
-									const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
-									for (const rule of data ? data.rules : []) {
-										if (rule.id && rule.description && rule.description.startsWith("sg:")) {
-											await cloudflare.rules.edit(id, rule.id, {
-												zone_id: zoneId,
-												enabled: false,
-												action: rule.action ?? "rewrite",
-												expression: rule.expression ?? "rewrite",
-												description: rule.description
-											});
-										}
-									}
-								}
+								await changeRule(zoneId, false);
 							},
 							60 * 60 * 1000
 						);
@@ -90,7 +86,7 @@ export const handleError = (async (input) => {
 	if (throughStatuses.includes(input.status)) {
 		return;
 	}
-	console.log(input);
+	console.error(input.error);
 }) satisfies HandleServerError;
 
 export const handle = (async ({ event, resolve }) => {
