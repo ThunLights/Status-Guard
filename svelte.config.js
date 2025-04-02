@@ -11,7 +11,9 @@ const adapter = (() => {
 		});
 	}
 	if (adapterType === "vercel") {
-		return vercelAdapter();
+		return vercelAdapter({
+			runtime: "nodejs20.x"
+		});
 	}
 	return nodeAdapter({
 		out: "build"
