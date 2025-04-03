@@ -1,5 +1,5 @@
 import nodeAdapter from "@sveltejs/adapter-node";
-import cfAdapter from "@sveltejs/adapter-cloudflare";
+import cfAdapter from "@sveltejs/adapter-cloudflare-workers";
 import vercelAdapter from "@sveltejs/adapter-vercel";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
