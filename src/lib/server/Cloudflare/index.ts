@@ -5,7 +5,7 @@ import { Rules } from "./Cloudflare.rules";
 
 export class CloudFlare {
 	public readonly client = new Client({
-		apiKey: CLOUDFLARE_API_KEY
+		apiToken: CLOUDFLARE_API_KEY
 	});
 	public readonly rulesets = new Rulesets(this.client);
 	public readonly rules = new Rules(this.client);
