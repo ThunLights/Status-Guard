@@ -29,7 +29,7 @@ async function changeRule(zoneId: string, enabled: boolean) {
 	}
 }
 
-async function start() {
+export async function start() {
 	for (const { zoneId } of await database.website.list()) {
 		await changeRule(zoneId, false);
 	}
