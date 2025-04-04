@@ -15,6 +15,9 @@
 
 	type StatusElemnt = ApiHomeResponse["post"][number]["data"][number];
 
+	const { data } = $props();
+	const { version } = data;
+
 	let pageStatusLabel = $state("");
 	let services = $state<ApiHomeResponse["post"]>([]);
 
@@ -72,7 +75,7 @@
 			{/each}
 		</div>
 	</main>
-	<Footer />
+	<Footer {version} />
 </div>
 
 <style>
