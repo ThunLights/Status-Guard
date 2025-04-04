@@ -29,34 +29,30 @@ async function changeRule(zoneId: string, enabled: boolean) {
 	}
 }
 
-export async function start() {
-	for (const { zoneId } of await database.website.list()) {
-		await changeRule(zoneId, false);
-	}
-
-	setInterval(async () => {
-		for (const { domain, url, zoneId } of await database.website.list()) {
-			if (!lockdownZones.has(zoneId)) {
-				const apis = (await database.api.fetchAll(domain)).concat({
-					domain,
-					url,
-					method: null,
-					header: null,
-					body: null
+async function checkStatus(cache: boolean) {
+	for (const { domain, url, zoneId } of await database.website.list()) {
+		if (cache && !lockdownZones.has(zoneId)) {
+			const apis = (await database.api.fetchAll(domain)).concat({
+				domain,
+				url,
+				method: null,
+				header: null,
+				body: null
+			});
+			for (const api of apis) {
+				const method = api.method ?? "GET";
+				const response = await Status.check(api.url, {
+					method: api.method ?? "GET",
+					headers: Header.parse(api.header),
+					body: method !== "GET" && method !== null ? JSON.stringify(api.body) : undefined
 				});
-				for (const api of apis) {
-					const method = api.method ?? "GET";
-					const response = await Status.check(api.url, {
-						method: api.method ?? "GET",
-						headers: Header.parse(api.header),
-						body: method !== "GET" && method !== null ? JSON.stringify(api.body) : undefined
-					});
-					if (response) {
-						await database.status.update(api.domain, response.status);
-					}
-					if (response && !response.ok) {
-						await changeRule(zoneId, true);
-						lockdownZones.set(zoneId, response);
+				if (response) {
+					await database.status.update(api.domain, response.status);
+				}
+				if (response && !response.ok) {
+					await changeRule(zoneId, true);
+					lockdownZones.set(zoneId, response);
+					if (cache) {
 						setTimeout(
 							async () => {
 								lockdownZones.delete(zoneId);
@@ -68,6 +64,18 @@ export async function start() {
 				}
 			}
 		}
+	}
+}
+
+export async function start() {
+	for (const { zoneId } of await database.website.list()) {
+		await changeRule(zoneId, false);
+	}
+
+	await checkStatus(false);
+
+	setInterval(async () => {
+		await checkStatus(true);
 	}, 60 * 1000);
 	setInterval(
 		async () => {
