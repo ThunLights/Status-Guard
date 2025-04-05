@@ -4,9 +4,17 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { Website } from "./Database.website";
 import { Api } from "./Database.api";
 import { Status } from "./Database.status";
-import { DATABASE_URL } from "$env/static/private";
 
-export const _prisma = new PrismaClient({ datasourceUrl: DATABASE_URL }).$extends(withAccelerate());
+const DB_URL = await (async () => {
+	try {
+		const { DATABASE_URL } = await import("$env/static/private");
+		return DATABASE_URL;
+	} catch {
+		return process.env["DATABASE_URL"];
+	}
+})();
+
+export const _prisma = new PrismaClient({ datasourceUrl: DB_URL }).$extends(withAccelerate());
 
 export class Database {
 	public readonly website = new Website();
