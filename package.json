@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node build/index.js",
 		"dev": "vite dev",
-		"status-check-bot": "bun run dev/app.ts",
+        "trigger": "trigger.dev@latest deploy",
 		"build": "npx prisma generate --no-engine && vite build",
 		"build:cf": "set \"ADAPTER_TYPE=cf\" && npm run build",
 		"ci": "npm run build && npm run build:cf",
@@ -55,6 +55,7 @@
 		"@types/node": "^22.13.15",
 		"bun": "^1.2.8",
 		"cloudflare": "^4.2.0",
+		"dotenv": "^16.4.7",
 		"esbuild": "^0.25.2",
 		"glob": "^11.0.1",
 		"node-fetch": "^3.3.2",
