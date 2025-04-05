@@ -9,7 +9,7 @@
 		"status-check-bot": "bun run dev/app.ts",
 		"build": "npx prisma generate --no-engine && vite build",
 		"build:cf": "set \"ADAPTER_TYPE=cf\" && npm run build",
-		"ci": "npm run build && npm run build:cf && npm run build:vercel",
+		"ci": "npm run build && npm run build:cf",
 		"db:migration": "npx prisma migrate dev",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -59,7 +59,6 @@
 		"glob": "^11.0.1",
 		"node-fetch": "^3.3.2",
 		"trigger.dev": "^3.3.17",
-		"triggerkit": "^1.5.4",
 		"wrangler": "^4.5.0",
 		"zod": "^3.24.2"
 	},
