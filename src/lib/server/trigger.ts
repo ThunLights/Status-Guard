@@ -24,6 +24,7 @@ export async function changeRule(zoneId: string, enabled: boolean) {
 }
 
 export async function resetRule() {
+	await database.trigger.reset();
 	for (const { zoneId } of await database.website.list()) {
 		await changeRule(zoneId, false);
 	}
@@ -31,7 +32,14 @@ export async function resetRule() {
 
 export async function checkStatus(cache: Map<string, Check> | null) {
 	for (const { domain, url, zoneId } of await database.website.list()) {
-		if (cache && !cache.has(zoneId)) {
+		const isChanged = await (async () => {
+			if (cache) {
+				return !cache.has(zoneId);
+			}
+			await database.trigger.deleteExpirrations();
+			return !(await database.trigger.fetch(domain));
+		})();
+		if (isChanged) {
 			const apis = (await database.api.fetchAll(domain)).concat({
 				domain,
 				url,
@@ -51,14 +59,20 @@ export async function checkStatus(cache: Map<string, Check> | null) {
 				}
 				if (response && !response.ok) {
 					await changeRule(zoneId, true);
-					cache.set(zoneId, response);
-					setTimeout(
-						async () => {
-							cache.delete(zoneId);
-							await changeRule(zoneId, false);
-						},
-						60 * 60 * 1000
-					);
+					if (cache) {
+						cache.set(zoneId, response);
+					} else {
+						await database.trigger.insert(domain);
+					}
+					if (cache) {
+						setTimeout(
+							async () => {
+								await changeRule(zoneId, false);
+								cache.delete(zoneId);
+							},
+							60 * 60 * 1000
+						);
+					}
 				}
 			}
 		}

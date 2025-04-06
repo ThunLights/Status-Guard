@@ -1,9 +1,5 @@
 import { defineConfig } from "@trigger.dev/sdk/v3";
-import { config } from "dotenv";
-
-config();
-
-const project = process.env["TRIGGER_PROJECT"];
+import { project } from "./.trigger.json";
 
 if (!project) {
 	throw new Error("TRIGGER_PROJECT not found");
