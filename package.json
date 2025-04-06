@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node build/index.js",
 		"dev": "vite dev",
-        "trigger": "trigger.dev@latest deploy",
+		"trigger": "trigger.dev@latest deploy",
 		"build": "npx prisma generate --no-engine && vite build",
 		"build:cf": "set \"ADAPTER_TYPE=cf\" && npm run build",
 		"ci": "npm run build && npm run build:cf",
