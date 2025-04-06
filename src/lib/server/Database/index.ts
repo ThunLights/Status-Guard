@@ -4,6 +4,7 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { Website } from "./Database.website";
 import { Api } from "./Database.api";
 import { Status } from "./Database.status";
+import { Trigger } from "./Database.trigger";
 
 const DB_URL = await (async () => {
 	try {
@@ -20,6 +21,7 @@ export class Database {
 	public readonly website = new Website();
 	public readonly api = new Api();
 	public readonly status = new Status();
+	public readonly trigger = new Trigger();
 }
 
 export const database = new Database();

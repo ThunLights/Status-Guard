@@ -35,3 +35,8 @@ model Status {
 
     @@id([domain, date])
 }
+
+model Trigger {
+    domain String   @id
+    limit  DateTime
+}
