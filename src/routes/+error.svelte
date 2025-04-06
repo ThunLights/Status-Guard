@@ -3,6 +3,9 @@
 	import Header from "$lib/components/header.svelte";
 	import Footer from "$lib/components/footer.svelte";
 
+	const { data } = $props();
+	const { version } = data;
+
 	const title = "Page Not Found";
 </script>
 
@@ -15,7 +18,7 @@
 		<p class="text-center">Page not found.</p>
 	</div>
 </main>
-<Footer />
+<Footer {version} />
 
 <style>
 	main {
