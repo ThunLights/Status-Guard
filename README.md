@@ -14,6 +14,7 @@ This is an anti-ddos script created by crossing the cloudflare api and status pa
 > git, nodejs, npm must be installed in advance.
 
 ### Clone this repo
+
 ```console
 git clone https://github.com/ThunLights/Status-Guard.git
 ```
@@ -39,6 +40,7 @@ Click [here](https://www.prisma.io/accelerate) to register for prisma accelerate
 Please put the url of prisma accelerate in .env's DATABASE_URL.
 
 #### Migration
+
 ```
 npm run db:migration
 ```
@@ -62,6 +64,7 @@ npx wrangler deploy
 This alone will not work, so use [trigger.dev](https://trigger.dev).
 
 And login from cli.
+
 ```
 npx trigger.dev login
 ```
