@@ -9,7 +9,7 @@ export async function changeRule(zoneId: string, enabled: boolean) {
 	for (const { id } of (await cloudflare.rulesets.list(zoneId)) ?? []) {
 		const rulesetId = id;
 		const data = await cloudflare.rulesets.get(rulesetId, { zone_id: zoneId });
-		for (const rule of data ? data.rules : []) {
+		for (const rule of data ? (data.rules ?? []) : []) {
 			if (rule.id && rule.description && rule.description.startsWith("sg:")) {
 				await cloudflare.rules.edit(id, rule.id, {
 					zone_id: zoneId,
