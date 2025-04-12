@@ -29,17 +29,31 @@ Please write .env with reference to .env.example.
 
 ### Database
 
-#### Prepare prisma accelerate
+### Prepare Database
 
-> The repo employs prisma accelerate to allow the database to work in a variety of environments.
->
-> The database will not work without going through prisma accelerate once.
+Database supports two types.
+
+**if you use cf workers, you must use prisma accelerate.**
+
+#### Normal Postgresql
+
+Please put the url of postgresql in .env's DATABASE_URL and DIRECT_URL.
+
+Then edit .env as follows.
+
+```env
+OPTION_ACCELERATE="no_use"
+```
+
+#### Prisma Accelerate
 
 Click [here](https://www.prisma.io/accelerate) to register for prisma accelerate.
 
-Please put the url of prisma accelerate in .env's DATABASE_URL.
+Please put the url of prisma accelerate in .env's DATABASE_URL and DIRECT_URL.
 
-#### Migration
+> caution: You will have to pay for the prisma accelerate because it will exceed the free quota of the prisma accelerate.
+
+### Migration
 
 ```
 npm run db:migration
