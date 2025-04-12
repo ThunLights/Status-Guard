@@ -20,15 +20,30 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      - name: CI
+      - name: CI-node
         env:
           PUBLIC_URL: "http://localhost:3000"
+          OPTION_ACCELERATE: "no_use"
           CLOUDFLARE_API_KEY: ""
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DATABASE_URL }}
 
         run: |
           npm install
-          npm run ci
+          npm run build
+          npm run lint
+          npm run check
+
+      - name: CI-cf
+        env:
+          PUBLIC_URL: "http://localhost:3000"
+          OPTION_ACCELERATE: "none"
+          CLOUDFLARE_API_KEY: ""
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DATABASE_URL }}
+
+        run: |
+          npm install
+          npm run build:cf
           npm run lint
           npm run check
