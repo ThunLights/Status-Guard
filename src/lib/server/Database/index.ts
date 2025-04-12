@@ -15,17 +15,19 @@ const DB_URL = await (async () => {
 	}
 })();
 
-export const _prisma = await (async () => {
+export const _prisma = (await (async () => {
 	try {
 		const { OPTION_ACCELERATE } = await import("$env/static/private");
 		if (OPTION_ACCELERATE === "no_use") {
 			return new PrismaClient();
 		}
 	} catch {
-		//
+		if (process.env["OPTION_ACCELERATE"] === "no_use") {
+			return new PrismaClient();
+		}
 	}
 	return new PrismaClient({ datasourceUrl: DB_URL }).$extends(withAccelerate());
-})();
+})()) as PrismaClient;
 
 export class Database {
 	public readonly website = new Website();
