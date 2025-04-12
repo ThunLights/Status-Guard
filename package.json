@@ -4,7 +4,7 @@
 	"version": "1.0.1",
 	"type": "module",
 	"scripts": {
-		"start": "node build/index.js",
+		"start": "node --env-file=.env build/index.js",
 		"dev": "vite dev",
 		"trigger": "npx trigger.dev@latest deploy --env-file \".env\"",
 		"build": "npx prisma generate --no-engine && vite build",
