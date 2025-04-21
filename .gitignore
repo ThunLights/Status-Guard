@@ -27,3 +27,5 @@ test.ts
 
 .trigger
 .trigger.json
+
+.dev.vars

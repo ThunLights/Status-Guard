@@ -29,33 +29,21 @@ Please write .env with reference to .env.example.
 
 ### Database
 
-### Prepare Database
-
-Database supports two types.
-
-**if you use cf workers, you must use prisma accelerate.**
-
-#### Normal Postgresql
-
-Please put the url of postgresql in .env's DATABASE_URL and DIRECT_URL.
-
-Then edit .env as follows.
-
-```env
-OPTION_ACCELERATE="no_use"
-```
-
-#### Prisma Accelerate
+### Prisma Accelerate
 
 Click [here](https://www.prisma.io/accelerate) to register for prisma accelerate.
 
-Please put the url of prisma accelerate in .env's DATABASE_URL and DIRECT_URL.
+Please put the url of prisma accelerate in .env's DATABASE_URL.
 
-> caution: You will have to pay for the prisma accelerate because it will exceed the free quota of the prisma accelerate.
+### Caution
+
+You will have to pay for the prisma accelerate because it will exceed the free quota of the prisma accelerate.
+
+If you would like to set up a database for free, please click [here](./CONTRIBUTING.md#prisma-accelerate-selfhost).
 
 ### Migration
 
-```
+```console
 npm run db:migration
 ```
 
@@ -70,7 +58,7 @@ npm start
 
 Please write `ADAPTER_TYPE=cf` in .env
 
-```
+```console
 npm run build:cf
 npx wrangler deploy
 ```
@@ -79,13 +67,13 @@ This alone will not work, so use [trigger.dev](https://trigger.dev).
 
 And login from cli.
 
-```
+```console
 npx trigger.dev login
 ```
 
 Please write .trigger.json with reference to .trigger.example.json.
 
-```
+```console
 npm run trigger
 ```
 

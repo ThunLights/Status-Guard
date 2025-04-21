@@ -6,7 +6,7 @@ const adapter = (() => {
 	const adapterType = process.env.ADAPTER_TYPE;
 	if (adapterType === "cf") {
 		return cfAdapter({
-			config: "wrangler.json"
+			config: "wrangler.jsonc"
 		});
 	}
 	return nodeAdapter({
