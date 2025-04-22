@@ -8,11 +8,20 @@ export type ApiHomeResponse = {
 		domain: string;
 		label: string | null;
 		data: {
-			status: number[];
+			status: Record<string, number>;
 			date: number;
 		}[];
 	}>;
 };
+
+function parseStatus(content: number[]) {
+	const result: Record<string, number> = {};
+	for (const statusCodeBase of content) {
+		const statusCode = statusCodeBase.toString();
+		result[statusCode] = result[statusCode] + 1 || 1;
+	}
+	return result;
+}
 
 export const POST = (async () => {
 	const data: ApiHomeResponse["post"] = [];
@@ -21,7 +30,10 @@ export const POST = (async () => {
 			domain,
 			label,
 			data: (await database.status.list({ where: { domain } })).map(({ status, date }) => {
-				return { status, date: date.getTime() };
+				return {
+					status: parseStatus(status),
+					date: date.getTime()
+				};
 			})
 		});
 	}
