@@ -8,7 +8,7 @@
 	import Footer from "$lib/components/footer.svelte";
 
 	import { onMount } from "svelte";
-	import { Status } from "$lib/client/status";
+	import { Status, type ParsedStatus } from "$lib/client/status";
 
 	import type { ApiHomeResponse } from "$routes/api/home/+server";
 	import type { ApiStatusResponse } from "./api/status/+server";
@@ -44,6 +44,16 @@
 			}
 		})();
 	});
+
+	function decompose(content: Record<string, number>): ParsedStatus {
+		const result: number[] = [];
+		for (const [statusCode, count] of Object.entries(content)) {
+			for (let i = 0; i < count; i++) {
+				result.push(Number(statusCode));
+			}
+		}
+		return Status.parse(result);
+	}
 </script>
 
 <Meta />
@@ -63,7 +73,7 @@
 							.fill(null)
 							.concat(service.data) as data, i (i)}
 							{#if data}
-								<div class={Status.parse(data.status)}></div>
+								<div class={decompose(data.status)}></div>
 							{:else}
 								<div class="unknown"></div>
 							{/if}
