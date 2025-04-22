@@ -12,7 +12,7 @@ const lockdownZones = new Map<string, Check>();
 async function start() {
 	await resetRule();
 
-	await checkStatus(null);
+	await checkStatus(lockdownZones);
 
 	setInterval(async () => {
 		await checkStatus(lockdownZones);
