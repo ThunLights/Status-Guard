@@ -44,7 +44,7 @@
 		"trigger.dev": "^3.3.17",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
-		"vite": "^6.0.0"
+		"vite": "^7.1.11"
 	},
 	"dependencies": {
 		"@fontsource/dela-gothic-one": "^5.2.5",
